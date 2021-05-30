@@ -60,6 +60,42 @@ add_recur :: Nat -> Nat -> Nat
 add_recur Zero n = n
 add_recur (Succ m) n = Succ (add_recur m n)
 
+-- Multiplication
+mult_recur :: Nat -> Nat -> Nat
+mult_recur Zero _ = Zero
+mult_recur (Succ Zero) x = x
+mult_recur (Succ x) y = add_recur y (mult_recur x y)
+
+-- Expression for data declaration
+data Expr = Val Int | Add Expr Expr | Mult Expr Expr
+
+size :: Expr -> Int
+size (Val _) = 1
+size (Add x y) = size x + size y
+size (Mult x y) = size x + size y
+
+eval :: Expr -> Int
+eval (Val n) = n
+eval (Add x y) = eval x + eval y
+eval (Mult x y) = eval x * eval y
+
+-- Building Tree
+-- In this tree, each leaf must have its value. Therefore, this is a binary tree
+data Tree a = Leaf a | Node a (Tree a) (Tree a)
+-- More custom tree is
+-- data AdvTree a = Leaf | Node a (Tree a) (Tree a)
+-- This time, if it is Leaf, it likes NULL on other languages
+
+printTree :: Tree Int -> IO()
+printTree (Leaf x) = do
+  print(x)
+  return()
+printTree (Node x y z) = do
+  print(x)
+  printTree y
+  printTree z
+  return()
+
 main = do
   print(flip_answer No)
   print(flip_answer Unk)
@@ -72,3 +108,7 @@ main = do
   print(nat2int (int2nat 4))
   print(nat2int (add (Succ (Succ (Succ (Succ Zero)))) (Succ (Succ (Succ Zero)))))
   print(nat2int (add_recur (Succ (Succ (Succ (Succ Zero)))) (Succ (Succ (Succ Zero)))))
+  print(nat2int (mult_recur (Succ (Succ (Succ (Succ Zero)))) (Succ (Succ (Succ Zero)))))
+  print(size (Add (Val 1) (Mult (Val 2) (Val 3))))
+  print(eval (Add (Val 1) (Mult (Val 2) (Val 3))))
+  printTree (Node 3 (Node 4 (Leaf 5) (Leaf 7)) (Node 10 (Leaf 7) (Node 8 (Leaf 13) (Leaf 15))))
